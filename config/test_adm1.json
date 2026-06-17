@@ -2,13 +2,12 @@
   "name": "test_adm1",
   "simulation": {
     "start_time": "2025-01-01T00:00:00",
-    "end_time":   "2025-01-10T00:00:00",
+    "end_time":   "2025-03-01T00:00:00",
     "timestep_hours": 1.0
   },
   "influent": {
-    "flowrate": 100.0,
+    "flowrate": 4.0,
     "temperature": 35.0,
-    "auto_fractionate": true,
     "composition": { "cod": 30000.0, "tss": 20000.0, "tkn": 800.0, "nh4": 400.0 }
   },
   "processes": [
