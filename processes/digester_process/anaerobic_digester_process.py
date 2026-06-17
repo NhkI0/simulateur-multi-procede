@@ -1,4 +1,5 @@
-﻿import numpy as np
+﻿import math
+import numpy as np
 import logging
 from typing import Dict, Any, List
 
@@ -78,12 +79,12 @@ class AnaerobicDigesterProcess(ProcessNode):
         S_h2_idx = self.model_instance.COMPONENT_INDICES.get('s_h2', 7)
         S_ch4_idx = self.model_instance.COMPONENT_INDICES.get('s_ch4', 8)
 
-        q_h2_transfer = self.k_L_a * c_out[S_h2_idx] * self.volume  # kg COD/j
-        q_ch4_transfer = self.k_L_a * c_out[S_ch4_idx] * self.volume  # kg COD/j
+        retention = math.exp(-self.k_L_a * dt_day)
+        q_h2_transfer  = c_out[S_h2_idx]  * (1.0 - retention) * self.volume
+        q_ch4_transfer = c_out[S_ch4_idx] * (1.0 - retention) * self.volume
 
-        # On enlève le gaz du liquide
-        c_out[S_h2_idx] = max(0.0, c_out[S_h2_idx] - q_h2_transfer * dt_day / self.volume)
-        c_out[S_ch4_idx] = max(0.0, c_out[S_ch4_idx] - q_ch4_transfer * dt_day / self.volume)
+        c_out[S_h2_idx]  *= retention
+        c_out[S_ch4_idx] *= retention
 
         ch4_kgCOD_per_day = q_ch4_transfer
         ch4_m3_per_day = ch4_kgCOD_per_day / 0.395  # 1kg COD CH4 = 0.395 m^3 à 35°C

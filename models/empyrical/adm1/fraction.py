@@ -32,6 +32,9 @@ class ADM1Fraction:
     ) -> Dict[str, float]:
         r = {**cls.DEFAULT_RATIOS, **(ratios or {})}
 
+        cod  = cod  / 1000.0
+        tss  = tss  / 1000.0
+
         cod_part = min(cod, 1.48 * tss) if tss > 0 else cod * 0.4
         cod_sol = max(0.0, cod - cod_part)
 
