@@ -23,6 +23,10 @@
         {
             "id": "randomforest",
             "path": "machine_learning/randomforest.json"
+        },
+        { 
+            "id": "adm1", 
+            "path": "empirical/adm1.json"
         }
     ]
 }
