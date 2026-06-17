@@ -1,0 +1,23 @@
+﻿{
+  "id": "anaerobic_digester",
+  "type": "AnaerobicDigesterProcess",
+  "name": "Digesteur anaérobie",
+  "description": "Digestion anaérobie - modèle ADM1",
+  "category": "biological",
+  "model": "ADM1Model",
+  "has_model_choice": false,
+  "required_params": [
+    {"name": "volume", "label": "Volume du digesteur", "unit": "m^3",
+      "default": 2000.0, "min": 10.0, "max": 500000.0},
+    {"name": "temperature", "label": "Température", "unit": "°C",
+      "default": 35.0, "min": 20.0, "max": 60.0}
+  ],
+  "optional_params": [
+    {"name": "waste_ratio",    "label": "Ratio de purge boues",  "unit": "Qw/Qin", "default": 0.05},
+    {"name": "recycle_ratio",  "label": "Ratio recyclage interne","unit": "Qr/Qin", "default": 0.0},
+    {"name": "k_L_a",         "label": "Transfert gaz-liquide",  "unit": "1/j",    "default": 200.0},
+    {"name": "model_parameters","label": "Paramètres ADM1 (override)", "unit": "",  "default": null}
+  ],
+  "module": "processes.digester_process.anaerobic_digester_process",
+  "class": "AnaerobicDigesterProcess"
+}

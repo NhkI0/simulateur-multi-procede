@@ -7,6 +7,10 @@
         {
             "id": "secondary_settler",
             "path": "processes/secondary_settler.json"
+        },
+        {
+            "id": "anaerobic_digester",
+            "path": "processes/anaerobic_digester.json"
         }
     ]
 }
