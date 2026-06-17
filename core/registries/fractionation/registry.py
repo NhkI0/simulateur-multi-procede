@@ -9,7 +9,7 @@ from .strategies import (
     NoFractionationStrategy,
     ASM1FractionationStrategy,
     ASM2DFractionationStrategy,
-    ASM3FractionationStrategy,
+    ASM3FractionationStrategy, ADM1FractionationStrategy,
 )
 
 logger = logging.getLogger(__name__)
@@ -44,11 +44,21 @@ def _build_asm3() -> Optional[FractionationStrategy]:
         return None
 
 
+def _build_adm1() -> Optional[FractionationStrategy]:
+    try:
+        from models.empyrical.adm1.fraction import ADM1Fraction
+        return ADM1FractionationStrategy(ADM1Fraction)
+    except ImportError:
+        logger.warning("ADM1Fraction non disponible")
+        return None
+
+
 _STRATEGY_CONSTRUCTORS = {
     'NoFractionationStrategy': lambda: NoFractionationStrategy(),
     'ASM1FractionationStrategy': _build_asm1,
     'ASM2DFractionationStrategy': _build_asm2d,
     'ASM3FractionationStrategy': _build_asm3,
+    'ADM1FractionationStrategy': _build_adm1,
 }
 
 

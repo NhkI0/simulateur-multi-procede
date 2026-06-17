@@ -7,5 +7,7 @@
   "ASM3MODEL":         "ASM3FractionationStrategy",
   "LINEARMODEL":       "NoFractionationStrategy",
   "RANDOMFORESTMODEL": "NoFractionationStrategy",
-  "TAKACSMODEL":       "NoFractionationStrategy"
+  "TAKACSMODEL":       "NoFractionationStrategy",
+  "ADM1":              "ADM1FractionationStrategy",
+  "ADM1MODEL":         "ADM1FractionationStrategy"
 }
