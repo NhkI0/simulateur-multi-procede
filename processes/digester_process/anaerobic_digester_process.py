@@ -1,11 +1,10 @@
-﻿import math
-import numpy as np
+﻿import numpy as np
 import logging
 from typing import Dict, Any, List
+from scipy.integrate import solve_ivp
 
 from core.process.process_node import ProcessNode
 from core.model.model_registry import ModelRegistry
-from core.solver.cstr_solver import CSTRSolver
 
 logger = logging.getLogger(__name__)
 
@@ -60,31 +59,30 @@ class AnaerobicDigesterProcess(ProcessNode):
         dilution = 1.0 / (hrt_h / 24.0)  # 1/j
         dt_day = dt / 24.0
 
-        c_out = CSTRSolver.solve_step(
-            c=self.concentrations.copy(),
-            c_in=c_in,
-            reaction_func=self.model_instance.derivatives,
-            dt=dt_day,
-            dilution_rate=dilution,
-            method='rk4',
-            oxygen_idx=None,  # évidemment pas d'oxygène
-            do_setpoint=None,
-        )
-        c_out = np.maximum(c_out, 0.0)
-
-        # Calcul du transfert gaz-liquid
-        # HELP !!:glehtklrùnf
-        # Loi de Henry simplifiée: flux_gaz = k_L_a * (S_dissous - S_sat)
-        # S_sat_h2 = 0 (H2 presque insoluble), S_sat_ch4 = 0
-        S_h2_idx = self.model_instance.COMPONENT_INDICES.get('s_h2', 7)
+        S_h2_idx  = self.model_instance.COMPONENT_INDICES.get('s_h2',  7)
         S_ch4_idx = self.model_instance.COMPONENT_INDICES.get('s_ch4', 8)
+        k_L_a = self.k_L_a
 
-        retention = math.exp(-self.k_L_a * dt_day)
-        q_h2_transfer  = c_out[S_h2_idx]  * (1.0 - retention) * self.volume
-        q_ch4_transfer = c_out[S_ch4_idx] * (1.0 - retention) * self.volume
+        def dc_dt(t: float, c: np.ndarray) -> np.ndarray:
+            c = np.maximum(c, 0.0)
+            dxdt = self.model_instance.derivatives(c)
+            dxdt += dilution * (c_in - c)
+            dxdt[S_h2_idx]  -= k_L_a * c[S_h2_idx]
+            dxdt[S_ch4_idx] -= k_L_a * c[S_ch4_idx]
+            return dxdt
 
-        c_out[S_h2_idx]  *= retention
-        c_out[S_ch4_idx] *= retention
+        sol = solve_ivp(
+            dc_dt,
+            t_span=(0.0, dt_day),
+            y0=self.concentrations.copy(),
+            method='Radau',
+            rtol=1e-4,
+            atol=1e-6,
+        )
+        c_out = np.maximum(sol.y[:, -1], 0.0)
+
+        q_h2_transfer  = k_L_a * c_out[S_h2_idx]  * self.volume
+        q_ch4_transfer = k_L_a * c_out[S_ch4_idx] * self.volume
 
         ch4_kgCOD_per_day = q_ch4_transfer
         ch4_m3_per_day = ch4_kgCOD_per_day / 0.395  # 1kg COD CH4 = 0.395 m^3 à 35°C
