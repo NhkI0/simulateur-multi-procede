@@ -102,7 +102,7 @@ class AnaerobicDigesterProcess(ProcessNode):
             if k in self.model_instance.COMPONENT_INDICES
         ) * 1000.0  # kg COD/m^3 -> mg/L
 
-        s_in_idx = self.model_instance.COMPONENT_INDICES['s_in', 10]
+        s_in_idx = self.model_instance.COMPONENT_INDICES.get('s_in', 10)
         nh4_out = c_out[s_in_idx] * 14.0 * 1000.0  # kmol N/m^3 -> mg N/L
 
         results = {
