@@ -8,83 +8,475 @@
   "processes_count": 19,
   "default_temperature": 35.0,
   "parameters": [
-    {"id": "k_dis",     "label": "Taux désintégration X_c",   "unit": "1/j", "default": 0.5},
-    {"id": "k_hyd_ch",  "label": "Taux hydrolyse glucides",    "unit": "1/j", "default": 10.0},
-    {"id": "k_hyd_pr",  "label": "Taux hydrolyse protéines",   "unit": "1/j", "default": 10.0},
-    {"id": "k_hyd_li",  "label": "Taux hydrolyse lipides",     "unit": "1/j", "default": 10.0},
-    {"id": "k_m_su",    "label": "Taux croissance max sucres", "unit": "1/j", "default": 30.0},
-    {"id": "K_S_su",    "label": "Demi-saturation sucres",     "unit": "kg COD/m³", "default": 0.5},
-    {"id": "Y_su",      "label": "Rendement sucres",           "unit": "-",   "default": 0.10},
-    {"id": "k_m_aa",    "label": "Taux croissance max AA",     "unit": "1/j", "default": 50.0},
-    {"id": "K_S_aa",    "label": "Demi-saturation AA",         "unit": "kg COD/m³", "default": 0.3},
-    {"id": "Y_aa",      "label": "Rendement AA",               "unit": "-",   "default": 0.08},
-    {"id": "k_m_fa",    "label": "Taux croissance max LCFA",   "unit": "1/j", "default": 6.0},
-    {"id": "K_S_fa",    "label": "Demi-saturation LCFA",       "unit": "kg COD/m³", "default": 0.4},
-    {"id": "K_I_h2_fa", "label": "Inhibition H2 (LCFA)",       "unit": "kg COD/m³", "default": 5e-6},
-    {"id": "k_m_c4",    "label": "Taux croissance max C4",     "unit": "1/j", "default": 20.0},
-    {"id": "K_S_c4",    "label": "Demi-saturation C4",         "unit": "kg COD/m³", "default": 0.2},
-    {"id": "K_I_h2_c4", "label": "Inhibition H2 (C4)",         "unit": "kg COD/m³", "default": 1e-5},
-    {"id": "k_m_pro",   "label": "Taux croissance max propionate", "unit": "1/j", "default": 13.0},
-    {"id": "K_S_pro",   "label": "Demi-saturation propionate", "unit": "kg COD/m³", "default": 0.1},
-    {"id": "K_I_h2_pro","label": "Inhibition H2 (propionate)", "unit": "kg COD/m³", "default": 3.5e-6},
-    {"id": "k_m_ac",    "label": "Taux croissance max acétate","unit": "1/j", "default": 8.0},
-    {"id": "K_S_ac",    "label": "Demi-saturation acétate",    "unit": "kg COD/m³", "default": 0.15},
-    {"id": "k_m_h2",    "label": "Taux croissance max H2",     "unit": "1/j", "default": 35.0},
-    {"id": "K_S_h2",    "label": "Demi-saturation H2",         "unit": "kg COD/m³", "default": 7e-6},
-    {"id": "k_dec_su",  "label": "Décès X_su",  "unit": "1/j", "default": 0.02},
-    {"id": "k_dec_aa",  "label": "Décès X_aa",  "unit": "1/j", "default": 0.02},
-    {"id": "k_dec_fa",  "label": "Décès X_fa",  "unit": "1/j", "default": 0.02},
-    {"id": "k_dec_c4",  "label": "Décès X_c4",  "unit": "1/j", "default": 0.02},
-    {"id": "k_dec_pro", "label": "Décès X_pro", "unit": "1/j", "default": 0.02},
-    {"id": "k_dec_ac",  "label": "Décès X_ac",  "unit": "1/j", "default": 0.02},
-    {"id": "k_dec_h2",  "label": "Décès X_h2",  "unit": "1/j", "default": 0.02},
-    {"id": "f_sI_xc",   "label": "Fraction SI/Xc", "unit": "-", "default": 0.1},
-    {"id": "f_xI_xc",   "label": "Fraction XI/Xc", "unit": "-", "default": 0.2},
-    {"id": "f_ch_xc",   "label": "Fraction Xch/Xc","unit": "-", "default": 0.2},
-    {"id": "f_pr_xc",   "label": "Fraction Xpr/Xc","unit": "-", "default": 0.2},
-    {"id": "f_li_xc",   "label": "Fraction Xli/Xc","unit": "-", "default": 0.3},
-    {"id": "f_bu_su",   "label": "Fraction bu/su",  "unit": "-", "default": 0.13},
-    {"id": "f_pro_su",  "label": "Fraction pro/su", "unit": "-", "default": 0.27},
-    {"id": "f_ac_su",   "label": "Fraction ac/su",  "unit": "-", "default": 0.41},
-    {"id": "f_h2_su",   "label": "Fraction H2/su",  "unit": "-", "default": 0.19}
+    {
+      "id": "k_dis",
+      "label": "Taux désintégration X_c",
+      "unit": "1/j",
+      "default": 0.5
+    },
+    {
+      "id": "k_hyd_ch",
+      "label": "Taux hydrolyse glucides",
+      "unit": "1/j",
+      "default": 10.0
+    },
+    {
+      "id": "k_hyd_pr",
+      "label": "Taux hydrolyse protéines",
+      "unit": "1/j",
+      "default": 10.0
+    },
+    {
+      "id": "k_hyd_li",
+      "label": "Taux hydrolyse lipides",
+      "unit": "1/j",
+      "default": 10.0
+    },
+    {
+      "id": "k_m_su",
+      "label": "Taux croissance max sucres",
+      "unit": "1/j",
+      "default": 30.0
+    },
+    {
+      "id": "K_S_su",
+      "label": "Demi-saturation sucres",
+      "unit": "kg COD/m³",
+      "default": 0.5
+    },
+    {
+      "id": "Y_su",
+      "label": "Rendement sucres",
+      "unit": "-",
+      "default": 0.1
+    },
+    {
+      "id": "k_m_aa",
+      "label": "Taux croissance max AA",
+      "unit": "1/j",
+      "default": 50.0
+    },
+    {
+      "id": "K_S_aa",
+      "label": "Demi-saturation AA",
+      "unit": "kg COD/m³",
+      "default": 0.3
+    },
+    {
+      "id": "Y_aa",
+      "label": "Rendement AA",
+      "unit": "-",
+      "default": 0.08
+    },
+    {
+      "id": "k_m_fa",
+      "label": "Taux croissance max LCFA",
+      "unit": "1/j",
+      "default": 6.0
+    },
+    {
+      "id": "K_S_fa",
+      "label": "Demi-saturation LCFA",
+      "unit": "kg COD/m³",
+      "default": 0.4
+    },
+    {
+      "id": "K_I_h2_fa",
+      "label": "Inhibition H2 (LCFA)",
+      "unit": "kg COD/m³",
+      "default": 5e-06
+    },
+    {
+      "id": "k_m_c4",
+      "label": "Taux croissance max C4",
+      "unit": "1/j",
+      "default": 20.0
+    },
+    {
+      "id": "K_S_c4",
+      "label": "Demi-saturation C4",
+      "unit": "kg COD/m³",
+      "default": 0.2
+    },
+    {
+      "id": "K_I_h2_c4",
+      "label": "Inhibition H2 (C4)",
+      "unit": "kg COD/m³",
+      "default": 1e-05
+    },
+    {
+      "id": "k_m_pro",
+      "label": "Taux croissance max propionate",
+      "unit": "1/j",
+      "default": 13.0
+    },
+    {
+      "id": "K_S_pro",
+      "label": "Demi-saturation propionate",
+      "unit": "kg COD/m³",
+      "default": 0.1
+    },
+    {
+      "id": "K_I_h2_pro",
+      "label": "Inhibition H2 (propionate)",
+      "unit": "kg COD/m³",
+      "default": 3.5e-06
+    },
+    {
+      "id": "k_m_ac",
+      "label": "Taux croissance max acétate",
+      "unit": "1/j",
+      "default": 8.0
+    },
+    {
+      "id": "K_S_ac",
+      "label": "Demi-saturation acétate",
+      "unit": "kg COD/m³",
+      "default": 0.15
+    },
+    {
+      "id": "k_m_h2",
+      "label": "Taux croissance max H2",
+      "unit": "1/j",
+      "default": 35.0
+    },
+    {
+      "id": "K_S_h2",
+      "label": "Demi-saturation H2",
+      "unit": "kg COD/m³",
+      "default": 7e-06
+    },
+    {
+      "id": "k_dec_su",
+      "label": "Décès X_su",
+      "unit": "1/j",
+      "default": 0.02
+    },
+    {
+      "id": "k_dec_aa",
+      "label": "Décès X_aa",
+      "unit": "1/j",
+      "default": 0.02
+    },
+    {
+      "id": "k_dec_fa",
+      "label": "Décès X_fa",
+      "unit": "1/j",
+      "default": 0.02
+    },
+    {
+      "id": "k_dec_c4",
+      "label": "Décès X_c4",
+      "unit": "1/j",
+      "default": 0.02
+    },
+    {
+      "id": "k_dec_pro",
+      "label": "Décès X_pro",
+      "unit": "1/j",
+      "default": 0.02
+    },
+    {
+      "id": "k_dec_ac",
+      "label": "Décès X_ac",
+      "unit": "1/j",
+      "default": 0.02
+    },
+    {
+      "id": "k_dec_h2",
+      "label": "Décès X_h2",
+      "unit": "1/j",
+      "default": 0.02
+    },
+    {
+      "id": "f_sI_xc",
+      "label": "Fraction SI/Xc",
+      "unit": "-",
+      "default": 0.1
+    },
+    {
+      "id": "f_xI_xc",
+      "label": "Fraction XI/Xc",
+      "unit": "-",
+      "default": 0.2
+    },
+    {
+      "id": "f_ch_xc",
+      "label": "Fraction Xch/Xc",
+      "unit": "-",
+      "default": 0.2
+    },
+    {
+      "id": "f_pr_xc",
+      "label": "Fraction Xpr/Xc",
+      "unit": "-",
+      "default": 0.2
+    },
+    {
+      "id": "f_li_xc",
+      "label": "Fraction Xli/Xc",
+      "unit": "-",
+      "default": 0.3
+    },
+    {
+      "id": "f_bu_su",
+      "label": "Fraction bu/su",
+      "unit": "-",
+      "default": 0.13
+    },
+    {
+      "id": "f_pro_su",
+      "label": "Fraction pro/su",
+      "unit": "-",
+      "default": 0.27
+    },
+    {
+      "id": "f_ac_su",
+      "label": "Fraction ac/su",
+      "unit": "-",
+      "default": 0.41
+    },
+    {
+      "id": "f_h2_su",
+      "label": "Fraction H2/su",
+      "unit": "-",
+      "default": 0.19
+    },
+    {
+      "id": "K_I_nh3",
+      "default": 0.0018,
+      "unit": "kmol N/m3",
+      "label": "Inhibition NH3 methanogenese acetoclaste"
+    },
+    {
+      "id": "pH_LL_ac",
+      "default": 6.0,
+      "unit": "-",
+      "label": "pH limite inferieur methanogenes acetoclastes"
+    },
+    {
+      "id": "pH_UL_ac",
+      "default": 7.0,
+      "unit": "-",
+      "label": "pH limite superieur methanogenes acetoclastes"
+    },
+    {
+      "id": "pH_LL_h2",
+      "default": 5.0,
+      "unit": "-",
+      "label": "pH limite inferieur methanogenes hydrogenotrophes"
+    },
+    {
+      "id": "pH_UL_h2",
+      "default": 6.0,
+      "unit": "-",
+      "label": "pH limite superieur methanogenes hydrogenotrophes"
+    },
+    {
+      "id": "pH_LL_bac",
+      "default": 4.0,
+      "unit": "-",
+      "label": "pH limite inferieur bacteries acidogenes"
+    },
+    {
+      "id": "pH_UL_bac",
+      "default": 5.5,
+      "unit": "-",
+      "label": "pH limite superieur bacteries acidogenes"
+    }
   ],
   "components": [
-    {"id": "s_su",  "name": "Monosaccharides",         "unit": "kg COD/m³"},
-    {"id": "s_aa",  "name": "Acides aminés",           "unit": "kg COD/m³"},
-    {"id": "s_fa",  "name": "LCFA",                    "unit": "kg COD/m³"},
-    {"id": "s_va",  "name": "Valérate",                "unit": "kg COD/m³"},
-    {"id": "s_bu",  "name": "Butyrate",                "unit": "kg COD/m³"},
-    {"id": "s_pro", "name": "Propionate",              "unit": "kg COD/m³"},
-    {"id": "s_ac",  "name": "Acétate",                 "unit": "kg COD/m³"},
-    {"id": "s_h2",  "name": "Hydrogène dissous",       "unit": "kg COD/m³"},
-    {"id": "s_ch4", "name": "Méthane dissous",         "unit": "kg COD/m³"},
-    {"id": "s_ic",  "name": "Carbone inorganique",     "unit": "kmol C/m³"},
-    {"id": "s_in",  "name": "Azote inorganique",       "unit": "kmol N/m³"},
-    {"id": "s_i",   "name": "Substrat inerte soluble", "unit": "kg COD/m³"},
-    {"id": "x_c",   "name": "Composite particulaire",  "unit": "kg COD/m³"},
-    {"id": "x_ch",  "name": "Glucides particulaires",  "unit": "kg COD/m³"},
-    {"id": "x_pr",  "name": "Protéines particulaires", "unit": "kg COD/m³"},
-    {"id": "x_li",  "name": "Lipides particulaires",   "unit": "kg COD/m³"},
-    {"id": "x_su",  "name": "Biomasse sucres",         "unit": "kg COD/m³"},
-    {"id": "x_aa",  "name": "Biomasse AA",             "unit": "kg COD/m³"},
-    {"id": "x_fa",  "name": "Biomasse LCFA",           "unit": "kg COD/m³"},
-    {"id": "x_c4",  "name": "Biomasse C4",             "unit": "kg COD/m³"},
-    {"id": "x_pro", "name": "Biomasse propionate",     "unit": "kg COD/m³"},
-    {"id": "x_ac",  "name": "Biomasse acétate",        "unit": "kg COD/m³"},
-    {"id": "x_h2",  "name": "Biomasse H2",             "unit": "kg COD/m³"},
-    {"id": "x_i",   "name": "Substrat inerte particulaire", "unit": "kg COD/m³"},
-    {"id": "s_cat", "name": "Cations (équilibre charge)", "unit": "kmol/m³"},
-    {"id": "s_an",  "name": "Anions (équilibre charge)",  "unit": "kmol/m³"}
+    {
+      "id": "s_su",
+      "name": "Monosaccharides",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "s_aa",
+      "name": "Acides aminés",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "s_fa",
+      "name": "LCFA",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "s_va",
+      "name": "Valérate",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "s_bu",
+      "name": "Butyrate",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "s_pro",
+      "name": "Propionate",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "s_ac",
+      "name": "Acétate",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "s_h2",
+      "name": "Hydrogène dissous",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "s_ch4",
+      "name": "Méthane dissous",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "s_ic",
+      "name": "Carbone inorganique",
+      "unit": "kmol C/m³"
+    },
+    {
+      "id": "s_in",
+      "name": "Azote inorganique",
+      "unit": "kmol N/m³"
+    },
+    {
+      "id": "s_i",
+      "name": "Substrat inerte soluble",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_c",
+      "name": "Composite particulaire",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_ch",
+      "name": "Glucides particulaires",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_pr",
+      "name": "Protéines particulaires",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_li",
+      "name": "Lipides particulaires",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_su",
+      "name": "Biomasse sucres",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_aa",
+      "name": "Biomasse AA",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_fa",
+      "name": "Biomasse LCFA",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_c4",
+      "name": "Biomasse C4",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_pro",
+      "name": "Biomasse propionate",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_ac",
+      "name": "Biomasse acétate",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_h2",
+      "name": "Biomasse H2",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "x_i",
+      "name": "Substrat inerte particulaire",
+      "unit": "kg COD/m³"
+    },
+    {
+      "id": "s_cat",
+      "name": "Cations (équilibre charge)",
+      "unit": "kmol/m³"
+    },
+    {
+      "id": "s_an",
+      "name": "Anions (équilibre charge)",
+      "unit": "kmol/m³"
+    }
   ],
   "metrics": {
-    "cod": ["s_su","s_aa","s_fa","s_va","s_bu","s_pro","s_ac","s_h2","s_ch4","s_i",
-      "x_c","x_ch","x_pr","x_li","x_su","x_aa","x_fa","x_c4","x_pro","x_ac","x_h2","x_i"],
+    "cod": [
+      "s_su",
+      "s_aa",
+      "s_fa",
+      "s_va",
+      "s_bu",
+      "s_pro",
+      "s_ac",
+      "s_h2",
+      "s_ch4",
+      "s_i",
+      "x_c",
+      "x_ch",
+      "x_pr",
+      "x_li",
+      "x_su",
+      "x_aa",
+      "x_fa",
+      "x_c4",
+      "x_pro",
+      "x_ac",
+      "x_h2",
+      "x_i"
+    ],
     "nh4": "s_in",
     "no3": null,
     "po4": null,
-    "tss": ["x_c","x_ch","x_pr","x_li","x_su","x_aa","x_fa","x_c4","x_pro","x_ac","x_h2","x_i"],
-    "biomass": ["x_su","x_aa","x_fa","x_c4","x_pro","x_ac","x_h2"],
-    "soluble_cod": ["s_su","s_aa","s_fa","s_va","s_bu","s_pro","s_ac"]
+    "tss": [
+      "x_c",
+      "x_ch",
+      "x_pr",
+      "x_li",
+      "x_su",
+      "x_aa",
+      "x_fa",
+      "x_c4",
+      "x_pro",
+      "x_ac",
+      "x_h2",
+      "x_i"
+    ],
+    "biomass": [
+      "x_su",
+      "x_aa",
+      "x_fa",
+      "x_c4",
+      "x_pro",
+      "x_ac",
+      "x_h2"
+    ],
+    "soluble_cod": [
+      "s_su",
+      "s_aa",
+      "s_fa",
+      "s_va",
+      "s_bu",
+      "s_pro",
+      "s_ac"
+    ]
   },
   "module": "models.empyrical.adm1.model",
   "class": "ADM1Model"
