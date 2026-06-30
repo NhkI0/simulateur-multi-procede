@@ -294,3 +294,112 @@ class TestSettlerPipeline:
             for key, val in flow_dict.items():
                 if isinstance(val, (int, float)):
                     assert not np.isnan(val), f"NaN dans décanteur '{key}'"
+
+
+# ===========================================================================
+# Filière complète : bassin → décanteur → digesteur (3 nœuds enchaînés)
+# ===========================================================================
+
+class TestFullChainWithDigester:
+    """
+    Chaîne complète d'une filière boues : le bassin d'aération (ASM1)
+    alimente le décanteur (Takacs), qui recycle une fraction vers le bassin
+    et envoie le reste (boues en excès) au digesteur anaérobie (ADM1).
+    """
+
+    @pytest.fixture(scope='class')
+    def results(self):
+        config = {
+            'name': 'test_full_chain_digester',
+            'simulation': {
+                'start_time':     '2025-01-01T00:00:00',
+                'end_time':       '2025-01-01T04:00:00',
+                'timestep_hours': 1.0,
+            },
+            'influent': {
+                'flowrate':    1000.0,
+                'temperature': 20.0,
+                'composition': {
+                    'cod': 500.0, 'ss': 250.0, 'tkn': 40.0,
+                    'nh4': 28.0, 'no3': 0.5, 'po4': 8.0, 'alkalinity': 6.0,
+                }
+            },
+            'processes': [
+                {
+                    'node_id': 'bassin',
+                    'type':    'ActivatedSludgeProcess',
+                    'name':    'Bassin aération',
+                    'config': {
+                        'model':                     'ASM1Model',
+                        'volume':                    5000.0,
+                        'dissolved_oxygen_setpoint': 2.0,
+                        'recycle_ratio':             0.0,
+                        'waste_ratio':               0.01,
+                    }
+                },
+                {
+                    'node_id': 'decanteur',
+                    'type':    'SecondarySettlerProcess',
+                    'name':    'Décanteur',
+                    'config': {
+                        'area':            500.0,
+                        'depth':           4.0,
+                        'n_layers':        10,
+                        'underflow_ratio': 0.6,
+                    }
+                },
+                {
+                    'node_id': 'digesteur',
+                    'type':    'AnaerobicDigesterProcess',
+                    'name':    'Digesteur anaérobie',
+                    'config': {
+                        'volume':      2000.0,
+                        'temperature': 35.0,
+                        'waste_ratio': 0.05,
+                        'k_L_a':       200.0,
+                    }
+                },
+            ],
+            'connections': [
+                {'source': 'influent',   'target': 'bassin',    'fraction': 1.0, 'is_recycle': False},
+                {'source': 'bassin',     'target': 'decanteur', 'fraction': 1.0, 'is_recycle': False},
+                {'source': 'decanteur',  'target': 'bassin',    'fraction': 0.6, 'is_recycle': True},
+                {'source': 'decanteur',  'target': 'digesteur', 'fraction': 0.4, 'is_recycle': False},
+            ]
+        }
+        return _run(config)
+
+    def test_runs_without_error(self, results):
+        assert results is not None
+
+    def test_all_three_nodes_in_history(self, results):
+        assert 'bassin'    in results['history']
+        assert 'decanteur' in results['history']
+        assert 'digesteur' in results['history']
+
+    def test_digester_has_steps(self, results):
+        assert len(results['history']['digesteur']) == 4
+
+    def test_no_nan_in_digester_history(self, results):
+        for flow_dict in results['history']['digesteur']:
+            for key, val in flow_dict.items():
+                if isinstance(val, (int, float)):
+                    assert not np.isnan(val), f"NaN dans digesteur '{key}'"
+
+    def test_digester_produces_methane(self, results):
+        """Le digesteur doit produire du méthane à partir des boues reçues."""
+        last_step = results['history']['digesteur'][-1]
+        assert last_step.get('ch4_m3_per_day', 0) >= 0
+
+    def test_digester_cod_removal_present(self, results):
+        last_step = results['history']['digesteur'][-1]
+        assert 'cod_removal_rate' in last_step
+
+    def test_digester_vfa_present_and_finite(self, results):
+        last_step = results['history']['digesteur'][-1]
+        assert np.isfinite(last_step.get('vfa_total', np.nan))
+
+    def test_summary_contains_all_processes(self, results):
+        assert 'bassin'    in results['summary']['performance']
+        assert 'decanteur' in results['summary']['performance']
+        assert 'digesteur' in results['summary']['performance']
