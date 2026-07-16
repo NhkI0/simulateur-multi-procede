@@ -108,12 +108,26 @@ class ProcessNode(ABC):
         """
         pass
 
-    def needs_fractionation(self, inputs: Dict[str, Any]) -> bool:
+    # Clés caractéristiques de chaque modèle, absentes des autres.
+    # Permet de détecter si les composants existants sont déjà au bon format.
+    _MODEL_SIGNATURE_KEYS: Dict[str, set] = {
+        'ADM1':  {'s_ic', 's_in', 'x_c'},
+        'ASM1':  {'x_bh', 'x_ba'},
+        'ASM2D': {'x_pao', 'x_meoh'},
+        'ASM3':  {'x_sto'},
+    }
+
+    def needs_fractionation(self, inputs: Dict[str, Any], target_model: str = 'ASM1') -> bool:
         """
-        Vérifie si l'input nécessite un fractionnement
+        Vérifie si l'input nécessite un fractionnement vers target_model.
+
+        Retourne False uniquement si des composants compatibles avec target_model
+        sont déjà présents. Des composants d'un autre modèle (ex. ASM1 → cible ADM1)
+        déclenchent toujours la fractionation.
 
         Args:
             inputs (Dict[str, Any]): Données d'entrée
+            target_model (str): Modèle cible
 
         Returns:
             bool: True si fractionnement nécessaire
@@ -122,10 +136,14 @@ class ProcessNode(ABC):
         if not flow:
             return False
         if flow.has_model_components():
-            return False
-        
+            sig_keys = self._MODEL_SIGNATURE_KEYS.get(target_model.upper(), set())
+            if sig_keys and any(k in flow.components for k in sig_keys):
+                return False  # composants déjà au bon format
+            # Composants présents mais d'un autre modèle → fractionation requise
+            return True
+
         return flow.cod > 0 or flow.tss > 0 or flow.tkn > 0
-    
+
     @safe_fractionation
     def fractionate_input(self, inputs: Dict[str, Any], target_model: str = 'ASM1') -> Dict[str, Any]:
         """
@@ -138,7 +156,7 @@ class ProcessNode(ABC):
         Returns:
             Dict[str, Any]: Inputs avec composants fractionnés
         """
-        if not self.needs_fractionation(inputs):
+        if not self.needs_fractionation(inputs, target_model):
             self.logger.debug("Fractionnement non nécessaire")
             return inputs
         

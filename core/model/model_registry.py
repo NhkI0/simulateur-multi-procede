@@ -13,6 +13,7 @@ from core.model.model_definition import ModelDefinition
 
 logger = logging.getLogger(__name__)
 
+
 class ModelRegistry:
     _instance = None
 
@@ -32,7 +33,7 @@ class ModelRegistry:
             raise FileNotFoundError(
                 f"Catalogue de modèles introuvable : {self.catalog_path}"
             )
-        
+
         index_path = self.catalog_path / 'index.json'
         with open(index_path, 'r', encoding='utf-8') as f:
             index = json.load(f)
@@ -66,7 +67,7 @@ class ModelRegistry:
         if cls._instance is None:
             cls._instance = cls(catalog_path)
         return cls._instance
-    
+
     def get_model_definition(self, model_type: str) -> ModelDefinition:
         """Récupère la définition d'un modèle"""
         if model_type not in self.models:
@@ -76,7 +77,7 @@ class ModelRegistry:
                 f"Type disponibles : {available}"
             )
         return self.models[model_type]
-    
+
     def create_model(
             self,
             model_type: str,
@@ -114,7 +115,7 @@ class ModelRegistry:
 
         logger.info(f"Modèle instancié : {definition.name} ({model_type})")
         return instance
-    
+
     def list_models(self, category: Optional[str] = None) -> List[ModelDefinition]:
         models = list(self.models.values())
 
@@ -122,25 +123,25 @@ class ModelRegistry:
             models = [m for m in models if m.category == category]
 
         return sorted(models, key=lambda m: m.name)
-    
+
     def get_model_types(self) -> List[str]:
         """Retourne la lsite des types de modèles disponibles"""
         return list(self.models.keys())
-    
+
     def get_mechanistric_models(self) -> List[str]:
         """Retourne uniquement les modèles mécanistes"""
         return [
             model_type for model_type, definition in self.models.items()
             if definition.category == 'empirical'
         ]
-    
+
     def get_ml_models(self) -> List[str]:
         """Retourne uniquement les modèles ML"""
         return [
             model_type for model_type, definition in self.models.items()
             if definition.category == 'machine_learning'
         ]
-    
+
     def to_cli_format(self) -> Dict[str, Dict[str, Any]]:
         """
         Convertit le registre au format attendu par CLIInterface

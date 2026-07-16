@@ -364,7 +364,7 @@ class TestFullChainWithDigester:
                 {'source': 'influent',   'target': 'bassin',    'fraction': 1.0, 'is_recycle': False},
                 {'source': 'bassin',     'target': 'decanteur', 'fraction': 1.0, 'is_recycle': False},
                 {'source': 'decanteur',  'target': 'bassin',    'fraction': 0.6, 'is_recycle': True},
-                {'source': 'decanteur',  'target': 'digesteur', 'fraction': 0.4, 'is_recycle': False},
+                {'source': 'decanteur',  'target': 'digesteur', 'fraction': 0.4, 'is_recycle': False, 'source_port': 'underflow'},
             ]
         }
         return _run(config)

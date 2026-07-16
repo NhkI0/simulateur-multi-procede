@@ -6,6 +6,7 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class FlowData:
     """
@@ -13,14 +14,14 @@ class FlowData:
     Structure flexible pour supporter différents modèles
     """
     timestamp: datetime
-    flowrate: float # m^3/h
-    temperature: float # °C
+    flowrate: float  # m^3/h
+    temperature: float  # °C
 
     # Paramètres tandards mesurables
-    tss: float = 0.0 # Solides en suspension (mg/L)
-    cod: float = 0.0 # DCO (mg/L)
-    bod: float = 0.0 # DBO5 (mg/L)
-    tkn: float = 0.0 # Azote Kjeldahl total (mg/L)
+    tss: float = 0.0  # Solides en suspension (mg/L)
+    cod: float = 0.0  # DCO (mg/L)
+    bod: float = 0.0  # DBO5 (mg/L)
+    tkn: float = 0.0  # Azote Kjeldahl total (mg/L)
     nh4: float = 0.0
     no3: float = 0.0
     po4: float = 0.0
@@ -28,6 +29,11 @@ class FlowData:
 
     # Composants du modèle (variables d'état ASM : si, ss, xi, xs, xbh…)
     components: Dict[str, float] = field(default_factory=dict)
+
+    # Flux secondaire de boues concentrées (ex. underflow d'un décanteur) :
+    # {'flowrate': float, 'tss': float, 'components': Dict[str, float]}
+    # Distinct de `components` pour ne jamais être confondu avec le flux principal (overflow).
+    underflow: Dict[str, Any] = field(default_factory=dict)
 
     # Métriques opérationnelles calculées (srt_days, svi, energy_kwh…)
     # Séparées de components pour ne pas être propagées comme des composés chimiques.
@@ -53,7 +59,7 @@ class FlowData:
         if key in self._STANDARD_KEYS:
             return getattr(self, key, default)
         return self.components.get(key, default)
-    
+
     def set(self, key: str, value: float) -> None:
         """
         Définit une valeur de composant
@@ -71,7 +77,7 @@ class FlowData:
     def has_model_components(self) -> bool:
         """Vérifie si le flux contient des composants de modèles"""
         return len(self.components) > 0
-    
+
     def get_all_components(self) -> Dict[str, float]:
         """
         Retourne tous les composants (standards + spécifique au modèle)
@@ -80,12 +86,12 @@ class FlowData:
             Dict[str, float]: Dictionnaire complet des composants
         """
         return {**{k: getattr(self, k) for k in self._STANDARD_KEYS}, **self.components}
-    
+
     def extract_measured(self, keys: Optional[list[str]] = None) -> Dict[str, float]:
         if keys is None:
             keys = ['tss', 'cod', 'bod', 'tkn', 'nh4', 'no3', 'po4', 'alkalinity']
         return {k: self.get(k, 0.0) for k in keys}
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """
         Convertit en dictionnaire.
@@ -96,7 +102,7 @@ class FlowData:
         # Aplatir metrics au niveau racine et supprimer la clé imbriquée
         data.update(data.pop('metrics', {}))
         return data
-    
+
     def copy(self) -> 'FlowData':
         """
         Crée une copie du flux
@@ -105,7 +111,7 @@ class FlowData:
             FlowData: Instance de FlowData
         """
         return FlowData(**asdict(self))
-    
+
     def __post_init__(self):
         """Valide les données après initialisation"""
         if self.flowrate < 0:

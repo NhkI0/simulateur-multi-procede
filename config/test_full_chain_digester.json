@@ -2,7 +2,7 @@
   "name": "test_full_chain_digester",
   "simulation": {
     "start_time": "2025-01-01T00:00:00",
-    "end_time":   "2025-07-01T00:00:00",
+    "end_time":   "2025-01-03T00:00:00",
     "timestep_hours": 1.0
   },
   "influent": {
@@ -54,6 +54,6 @@
     { "source": "influent",  "target": "bassin",    "fraction": 1.0, "is_recycle": false },
     { "source": "bassin",    "target": "decanteur", "fraction": 1.0, "is_recycle": false },
     { "source": "decanteur", "target": "bassin",    "fraction": 0.6, "is_recycle": true  },
-    { "source": "decanteur", "target": "digesteur", "fraction": 0.4, "is_recycle": false }
+    { "source": "decanteur", "target": "digesteur", "fraction": 0.4, "is_recycle": false, "source_port": "underflow" }
   ]
 }

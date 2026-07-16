@@ -12,6 +12,7 @@ from core.connection.connection_visualizer import ConnectionVisualizer
 
 logger = logging.getLogger(__name__)
 
+
 class ConnectionManager:
     """
     Gère le graphe complet de connexions
@@ -24,11 +25,12 @@ class ConnectionManager:
         self._connections = []
         self._nodes = set()
 
-    def add_connection(self, 
-                       source_id: str, 
-                       target_id: str, 
-                       flow_fraction: float = 1.0, 
-                       is_recycle: bool = False) -> None:
+    def add_connection(self,
+                       source_id: str,
+                       target_id: str,
+                       flow_fraction: float = 1.0,
+                       is_recycle: bool = False,
+                       source_port: str = "main") -> None:
         """
         Ajoute une connexion au graphe
 
@@ -37,6 +39,8 @@ class ConnectionManager:
             target_id (str): ID du noeud cible
             flow_fraction (float, optional): Fraction du débit (0 < fraction <= 1.0). Defaults to 1.0.
             is_recycle (bool, optional): True si c'est un recyclage. Defaults to False.
+            source_port (str, optional): "main" (flux principal) ou "underflow" (boues
+                concentrées exposées par certains procédés, ex. décanteur). Defaults to "main".
 
         Raises:
             ValueError si flow_fraction invalide
@@ -46,8 +50,8 @@ class ConnectionManager:
             raise ValueError(f"flow_fraction doit être dans ]0, 1], reçu : {flow_fraction}")
         if source_id == target_id:
             raise ValueError("source_id et target_id doivent être différents")
-        
-        conn = Connection(source_id, target_id, flow_fraction, is_recycle)
+
+        conn = Connection(source_id, target_id, flow_fraction, is_recycle, source_port)
 
         self._connections.append(conn)
         self._nodes.add(source_id)
@@ -70,9 +74,9 @@ class ConnectionManager:
         for conn in self._connections:
             if conn.target_id == node_id:
                 upstream.append((conn.source_id, conn))
-        
+
         return upstream
-    
+
     def get_downstream_nodes(self, node_id: str) -> List[Tuple[str, Connection]]:
         """
         Trouve tous les noeuds qui reçoivent du flux depuis node_id
@@ -89,7 +93,7 @@ class ConnectionManager:
             if conn.source_id == node_id:
                 downstream.append((conn.target_id, conn))
         return downstream
-    
+
     def get_execution_order(self) -> List[str]:
         """
         Calcule l'ordre d'exécution des noeuds
@@ -104,7 +108,7 @@ class ConnectionManager:
 
         Returns:
             List[str]: Liste de node_id dans l'ordre d'exécution
-        
+
         Raises:
             ValueError si cycle détecté (hors recyclage)
         """
@@ -119,7 +123,7 @@ class ConnectionManager:
                 non_recycle_edges[conn.source_id].append(conn.target_id)
 
                 in_degree[conn.target_id] += 1
-        
+
         queue = [node for node, degree in in_degree.items() if degree == 0]
 
         order = []
@@ -136,20 +140,21 @@ class ConnectionManager:
         if len(order) != len(self._nodes):
             raise ValueError("Cycle détecté dans le graphe (hors recyclage)."
                              "Marquez les recyclages avec is_recycle=True")
-        
+
         logger.debug(f"Ordre d'exécution calculé : {'->'.join(order)}")
         return order
-    
+
     def detect_cycles(self) -> List[List[str]]:
         """
         Détecte tous lescycles dans le graphe complet (avec recyclages)
 
         Algorithme : DFS (Depth-First search)
-        
+
         Returns:
             List[List[str]]: Liste des cycles détectés (chaque cycle = liste de node_id)
         """
-        def dfs(node: str, visited: Set[str], rec_stack: Set[str], path: List[str]) -> List[str]|None:
+
+        def dfs(node: str, visited: Set[str], rec_stack: Set[str], path: List[str]) -> List[str] | None:
             visited.add(node)
             rec_stack.add(node)
             path.append(node)
@@ -160,25 +165,25 @@ class ConnectionManager:
                     cycle = dfs(target_id, visited, rec_stack, path.copy())
                     if cycle:
                         return cycle
-                    
+
                 elif target_id in rec_stack:
                     # On est tombé sur un noeud déjà dans la pile -> cycle
                     cycle_start = path.index(target_id)
                     return path[cycle_start:] + [target_id]
-            
+
             rec_stack.remove(node)
             return None
-        
+
         cycles = []
         visited = set()
 
         for node in self._nodes:
             if node not in visited:
-                cycle = dfs(node,visited, set(), [])
+                cycle = dfs(node, visited, set(), [])
                 if cycle and cycle not in cycles:
                     cycles.append(cycle)
         return cycles
-    
+
     def validate(self) -> Dict[str, Any]:
         """
         Valide la cohérence du graphe
@@ -208,7 +213,7 @@ class ConnectionManager:
                     validation['errors'].append(
                         f"Node '{node}' : somme des fractions = {total_fraction:.2f} > 1.0"
                     )
-        
+
         cycles = self.detect_cycles()
 
         for cycle in cycles:
@@ -236,7 +241,7 @@ class ConnectionManager:
     def to_dict(self) -> Dict[str, Any]:
         return {
             'nodes': list(self._nodes),
-            'connections' : [
+            'connections': [
                 {
                     'source': conn.source_id,
                     'target': conn.target_id,
@@ -246,13 +251,13 @@ class ConnectionManager:
                 for conn in self._connections
             ]
         }
-    
+
     def visualize_ascii(
-        self,
-        style: str = "detailed",
-        show_fractions: bool = True,
-        show_stats: bool = True,
-        highlight_cycles: bool = True
+            self,
+            style: str = "detailed",
+            show_fractions: bool = True,
+            show_stats: bool = True,
+            highlight_cycles: bool = True
     ) -> str:
         """
         Génère une représentation ASCII du graphe
@@ -273,13 +278,10 @@ class ConnectionManager:
             show_stats=show_stats,
             highlight_cycles=highlight_cycles
         )
-        
-    
+
     def __repr__(self) -> str:
         return (
             f"<ConnectionManager("
             f"nodes={len(self._nodes)}, "
             f"connections={len(self._connections)}>"
         )
-
-

@@ -76,7 +76,8 @@ class SimulationOrchestrator:
                 source_id=conn['source'],
                 target_id=conn['target'],
                 flow_fraction=conn.get('fraction', 1.0),
-                is_recycle=conn.get('is_recycle', False)
+                is_recycle=conn.get('is_recycle', False),
+                source_port=conn.get('source_port', 'main')
             )
         
         validation = self.connection_manager.validate()
@@ -159,6 +160,35 @@ class SimulationOrchestrator:
             self.databus.write_flow(process.node_id, flow)
             self.simulation_flow.add_flow(process.node_id, flow)
 
+    def _resolve_source_view(self, source_flow, connection: Connection) -> Tuple[float, Dict[str, float]]:
+        """
+        Résout (débit de base, composants) pour une connexion donnée, selon le
+        port source demandé.
+
+        Le port "underflow" pioche dans le flux de boues concentrées exposé par
+        certains procédés (ex. décanteur) plutôt que dans le flux principal
+        (overflow/effluent clarifié), afin d'éviter qu'un procédé en aval
+        (ex. digesteur) ne reçoive par erreur une fraction du flux clarifié.
+
+        Args:
+            source_flow (FlowData): Flux source lu depuis le DataBus
+            connection (Connection): Connexion décrivant le port et la fraction
+
+        Returns:
+            Tuple[float, Dict[str, float]]: (débit total du port, composants du port)
+        """
+        if connection.source_port == 'underflow':
+            if not source_flow.underflow:
+                self.logger.warning(
+                    f"Connexion {connection} demande le port 'underflow' mais "
+                    f"'{connection.source_id}' n'expose aucun flux underflow ; "
+                    f"utilisation du flux principal en repli"
+                )
+            else:
+                underflow = source_flow.underflow
+                return underflow.get('flowrate', 0.0), underflow.get('components', {})
+        return source_flow.flowrate, source_flow.components
+
     def _get_process_inputs(self, process: ProcessNode) -> Dict[str, Any]:
         """
         Récupère les inputs pour un ProcessNode depuis le DataBus
@@ -187,14 +217,55 @@ class SimulationOrchestrator:
                 return {}
             
             fraction = connection.flow_fraction
+            base_flowrate, base_components = self._resolve_source_view(source_flow, connection)
+
+            # Pour un port underflow, construire un FlowData avec les concentrations
+            # réelles des boues concentrées (TSS/COD underflow >> overflow).
+            flow_for_input = self._build_flow_for_input(source_flow, connection)
+
             return {
-                'flow': source_flow,
-                'flowrate': source_flow.flowrate * fraction,
+                'flow': flow_for_input,
+                'flowrate': base_flowrate * fraction,
                 'temperature': source_flow.temperature,
-                'components': source_flow.components.copy()
-            } 
+                'components': base_components.copy()
+            }
         return self._mix_multiple_sources(upstream_connections)
-    
+
+    def _build_flow_for_input(self, source_flow, connection: Connection):
+        """
+        Retourne un FlowData dont les attributs mesurables (cod, tss…) reflètent
+        le port réellement utilisé.
+
+        Pour le port 'underflow', les concentrations TSS/COD de l'overflow principal
+        sont remplacées par celles des boues concentrées, afin que la fractionation
+        ADM1 s'appuie sur les bonnes valeurs substrat.
+        """
+        if connection.source_port != 'underflow' or not source_flow.underflow:
+            return source_flow
+
+        from core.data.flow_data import FlowData
+        uf = source_flow.underflow
+        uf_tss = uf.get('tss', 0.0)
+        # Estimation COD boues : iCOD_VSS ≈ 1.42 g COD / g VSS pour biomasse activée
+        uf_cod = uf_tss * 1.42
+
+        flow = FlowData(
+            timestamp=source_flow.timestamp,
+            flowrate=uf.get('flowrate', source_flow.flowrate),
+            temperature=source_flow.temperature,
+            tss=uf_tss,
+            cod=uf_cod,
+            tkn=source_flow.tkn,
+            nh4=source_flow.nh4,
+            no3=source_flow.no3,
+            po4=source_flow.po4,
+            alkalinity=source_flow.alkalinity,
+            components=uf.get('components', {}).copy(),
+            model_type=source_flow.model_type,
+            source_node=source_flow.source_node,
+        )
+        return flow
+
     def _mix_multiple_sources(self, upstream_connections: List[Tuple[str, Connection]]) -> Dict[str, Any]:
         """
         Mélange plusiseurs flux sources avec leurs fractions respectives
@@ -218,12 +289,13 @@ class SimulationOrchestrator:
             if reference_flow is None:
                 reference_flow = source_flow
 
-            fractional_flowrate = source_flow.flowrate * connection.flow_fraction
+            base_flowrate, base_components = self._resolve_source_view(source_flow, connection)
+            fractional_flowrate = base_flowrate * connection.flow_fraction
             total_flowrate += fractional_flowrate
 
             weighted_temp += source_flow.temperature * fractional_flowrate
 
-            for component, concentration in source_flow.components.items():
+            for component, concentration in base_components.items():
                 if not isinstance(concentration, (int, float)):
                     continue
                 if component not in weighted_components:
@@ -268,6 +340,7 @@ class SimulationOrchestrator:
         )
 
         flow.components = outputs.get('components', {}).copy()
+        flow.underflow = outputs.get('underflow', {}).copy() if outputs.get('underflow') else {}
 
         # Séparer les métriques opérationnelles des composants chimiques :
         # - flow.components  → variables d'état ASM (si, ss, xi, xs, xbh…)
