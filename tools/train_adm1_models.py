@@ -41,24 +41,14 @@ FEATURE_COLS = [
     'tss_in',
     'tkn_in',
     'nh4_in',
-    's_in_in',
-    's_ic_in',
-    'x_c_in',
 ]
 
 TARGET_COLS = [
-    # 'cod_out_kg_m3',
-    # 'tss_out_kg_m3',
-    # 'nh4_out_mg_l',
-    # 'vfa_total_kg_m3', # Stabilité du procédé
-    # # 'biomass_active_kg_m3',
-    # 's_ac_kg_m3', # Stabilité du procédé
-    # 's_h2_kg_m3',
-    # 'x_ac_kg_m3',
-    # 'x_h2_kg_m3',
-    'ch4_m3_per_m3_day',  # Efficacité du procédé
-    'cod_removal_pct',  # Efficacité du procédé
-    'pH',  # Efficacité du procédé
+    'ch4_m3_per_day',    # Production biogaz
+    'pH',                # Stabilité du procédé
+    'cod_out_kg_m3',     # Efficacité épuration
+    'nh4_out_mg_l',      # Azote ammoniacal sortie
+    'x_ac_kg_m3',        # Biomasse acétoclaste
 ]
 
 MODELS = {
