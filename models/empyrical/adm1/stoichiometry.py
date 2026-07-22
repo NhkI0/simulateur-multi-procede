@@ -118,10 +118,10 @@ def build_stoichiometric_matrix(p: dict) -> np.ndarray:
     C_xc = p.get('C_xc', 0.0280)  # composite
 
     # Contenus en azote (kmol N / kg COD) pour bilan S_IN
-    N_aa = p.get('N_aa', 0.0071)
-    N_bac = p.get('N_bac', 0.0057)
-    N_I = p.get('N_I', 0.0057)
-    N_xc = p.get('N_xc', 0.0057)
+    N_aa  = p.get('N_aa',  0.007)          # Rosen Table p.16 : 0.007 kmol N/kg COD
+    N_bac = p.get('N_bac', 0.08 / 14)     # Rosen Table p.16 : 0.08/14 ≈ 0.00571
+    N_I   = p.get('N_I',   0.06 / 14)     # Rosen Table p.16 : 0.06/14 ≈ 0.00429
+    N_xc  = p.get('N_xc',  0.0376 / 14)   # Rosen Table p.16 : 0.0376/14 ≈ 0.00269
 
     # Processus 0: Désintégration de X_c
     # X_c -> f_ch * X_ch + f_pr * X_pr + f_li * X_li + f_sI * S_I + f_xI * X_I

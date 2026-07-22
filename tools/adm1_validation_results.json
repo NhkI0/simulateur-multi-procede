@@ -1,0 +1,201 @@
+{
+  "config": "adm1_validation_rosen",
+  "reference": "Rosen & Jeppsson (2006)",
+  "tolerance_pct": 5.0,
+  "n_steps_averaged": 168,
+  "verdict": "VALIDATION PARTIELLE — voir variables hors tolerance",
+  "rows": [
+    {
+      "variable": "s_su",
+      "reference": 0.011954829717,
+      "obtained": 0.01684204534764321,
+      "ecart_pct": 40.880679577505774,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "s_aa",
+      "reference": 0.0053147401716,
+      "obtained": 0.007468725752344032,
+      "ecart_pct": 40.528520890901355,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "s_fa",
+      "reference": 0.0986214009308,
+      "obtained": 5.415426956550682,
+      "ecart_pct": 5391.127590400528,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "s_va",
+      "reference": 0.0116250064639,
+      "obtained": 1.9518391916629094,
+      "ecart_pct": 16690.005216118385,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "s_bu",
+      "reference": 0.0132507296663,
+      "obtained": 2.483431558575135,
+      "ecart_pct": 18641.847589654913,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "s_pro",
+      "reference": 0.0157836662845,
+      "obtained": 3.4885379191625825,
+      "ecart_pct": 22002.202721990034,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "s_ac",
+      "reference": 0.1976297169375,
+      "obtained": 12.680780595186675,
+      "ecart_pct": 6316.434123212829,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "s_h2",
+      "reference": 2.359451e-07,
+      "obtained": 0.0001253161978093571,
+      "ecart_pct": 53012.43921122206,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "s_ch4",
+      "reference": 0.055088776446,
+      "obtained": 0.025172974623633364,
+      "ecart_pct": -54.30471277882016,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "s_ic",
+      "reference": 0.1526778706263,
+      "obtained": 0.01861012807687917,
+      "ecart_pct": -87.81085431664815,
+      "unit": "kmole C/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "s_in",
+      "reference": 0.1302298158037,
+      "obtained": 0.13965953279028362,
+      "ecart_pct": 7.240828014989571,
+      "unit": "kmole N/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "x_c",
+      "reference": 0.3086976637215,
+      "obtained": 0.2540154304020157,
+      "ecart_pct": -17.713847477905556,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "x_ch",
+      "reference": 0.027947240435,
+      "obtained": 0.027401974429591046,
+      "ecart_pct": -1.9510549053211153,
+      "unit": "kg COD/m3",
+      "status": "OK"
+    },
+    {
+      "variable": "x_pr",
+      "reference": 0.1025741061067,
+      "obtained": 0.1020253457198155,
+      "ecart_pct": -0.5349891972869435,
+      "unit": "kg COD/m3",
+      "status": "OK"
+    },
+    {
+      "variable": "x_li",
+      "reference": 0.0294830497073,
+      "obtained": 0.028665733096015843,
+      "ecart_pct": -2.772157627512291,
+      "unit": "kg COD/m3",
+      "status": "OK"
+    },
+    {
+      "variable": "x_su",
+      "reference": 0.4201659824546,
+      "obtained": 0.4114579024687233,
+      "ecart_pct": -2.0725333200475418,
+      "unit": "kg COD/m3",
+      "status": "OK"
+    },
+    {
+      "variable": "x_aa",
+      "reference": 1.1791717989237,
+      "obtained": 1.172816618673092,
+      "ecart_pct": -0.5389528698370208,
+      "unit": "kg COD/m3",
+      "status": "OK"
+    },
+    {
+      "variable": "x_fa",
+      "reference": 0.2430353447194,
+      "obtained": 0.008464082602459502,
+      "ecart_pct": -96.51734499266688,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "x_c4",
+      "reference": 0.431921105636,
+      "obtained": 0.2401434067880034,
+      "ecart_pct": -44.401094631762824,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "x_pro",
+      "reference": 0.137305908934,
+      "obtained": 0.008573909315868544,
+      "ecart_pct": -93.75561519352395,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "x_ac",
+      "reference": 0.7605626583132,
+      "obtained": 0.007142908403212103,
+      "ecart_pct": -99.06083892955594,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "x_h2",
+      "reference": 0.3170229533613,
+      "obtained": 0.13702986779545384,
+      "ecart_pct": -56.776042131155826,
+      "unit": "kg COD/m3",
+      "status": "HORS TOLERANCE"
+    },
+    {
+      "variable": "x_i",
+      "reference": 25.617395327443,
+      "obtained": 25.508104508275302,
+      "ecart_pct": -0.4266273669541163,
+      "unit": "kg COD/m3",
+      "status": "OK"
+    },
+    {
+      "variable": "pH",
+      "reference": 7.4655377698929,
+      "obtained": 5.0000004824796145,
+      "ecart_pct": -33.02558185903674,
+      "unit": "—",
+      "status": "HORS TOLERANCE"
+    }
+  ]
+}

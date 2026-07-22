@@ -23,7 +23,7 @@ def calculate_pH(concentrations: np.ndarray, p: dict) -> tuple:
         return (10 ** -pKa_ref) * np.exp(dH / R * (1 / T_ref - 1 / T_K))
 
     Ka_w   = Ka(14.000,  55900)
-    Ka_co2 = Ka( 6.350,  -7646)
+    Ka_co2 = Ka( 6.350,   7646)   # +7646 : Rosen Table 18, Ka,co2 augmente avec T
     Ka_IN  = Ka( 9.250,  51965)
     Ka_ac  = Ka( 4.756,      0)
     Ka_pro = Ka( 4.874,      0)

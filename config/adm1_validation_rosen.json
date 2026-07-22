@@ -1,0 +1,88 @@
+{
+  "name": "adm1_validation_rosen",
+  "simulation": {
+    "start_time": "2025-01-01T00:00:00",
+    "end_time":   "2025-07-20T00:00:00",
+    "timestep_hours": 1.0
+  },
+  "influent": {
+    "flowrate":    7.083,
+    "temperature": 35.0,
+    "composition": {
+      "components": {
+        "s_su":  0.01,
+        "s_aa":  0.001,
+        "s_fa":  0.001,
+        "s_va":  0.001,
+        "s_bu":  0.001,
+        "s_pro": 0.001,
+        "s_ac":  0.001,
+        "s_h2":  1.0e-8,
+        "s_ch4": 1.0e-5,
+        "s_ic":  0.04,
+        "s_in":  0.01,
+        "s_i":   0.02,
+        "x_c":   2.0,
+        "x_ch":  5.0,
+        "x_pr":  20.0,
+        "x_li":  5.0,
+        "x_su":  0.0,
+        "x_aa":  0.01,
+        "x_fa":  0.01,
+        "x_c4":  0.01,
+        "x_pro": 0.01,
+        "x_ac":  0.01,
+        "x_h2":  0.01,
+        "x_i":   25.0,
+        "s_cat": 0.04,
+        "s_an":  0.02
+      }
+    }
+  },
+  "processes": [
+    {
+      "node_id": "digesteur",
+      "type":    "AnaerobicDigesterProcess",
+      "name":    "Digesteur anaérobie (validation Rosen & Jeppsson 2006)",
+      "config": {
+        "volume":      3400.0,
+        "V_gas":       300.0,
+        "temperature": 35.0,
+        "waste_ratio": 0.0,
+        "k_L_a":       200.0,
+        "k_p":         50000.0,
+        "initial_state": {
+          "s_su":  0.012,
+          "s_aa":  0.005,
+          "s_fa":  0.099,
+          "s_va":  0.012,
+          "s_bu":  0.013,
+          "s_pro": 0.016,
+          "s_ac":  0.198,
+          "s_h2":  2.4e-7,
+          "s_ch4": 0.055,
+          "s_ic":  0.153,
+          "s_in":  0.130,
+          "s_i":   0.329,
+          "x_c":   0.309,
+          "x_ch":  0.028,
+          "x_pr":  0.103,
+          "x_li":  0.030,
+          "x_su":  0.420,
+          "x_aa":  1.179,
+          "x_fa":  0.243,
+          "x_c4":  0.432,
+          "x_pro": 0.137,
+          "x_ac":  0.01,
+          "x_h2":  0.317,
+          "x_i":   25.617,
+          "s_cat": 0.04,
+          "s_an":  0.02
+        }
+      }
+    }
+  ],
+  "connections": [
+    { "source": "influent", "target": "digesteur", "fraction": 1.0, "is_recycle": false }
+  ]
+}
