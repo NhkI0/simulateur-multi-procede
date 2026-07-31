@@ -22,9 +22,12 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.linear_model import Ridge
 from sklearn.multioutput import MultiOutputRegressor
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_absolute_error
+
+from models.ml.anfis_sugeno import ANFISSugeno
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -55,7 +58,12 @@ MODELS = {
     'rf': lambda: RandomForestRegressor(n_estimators=200, max_depth=None, random_state=42, n_jobs=-1),
     'gb': lambda: MultiOutputRegressor(
         GradientBoostingRegressor(n_estimators=200, max_depth=4, learning_rate=0.05, random_state=42), n_jobs=-1),
-    'ridge': lambda: Ridge(alpha=1.0),
+    'ridge': lambda: Pipeline([
+        ('scaler_y', StandardScaler()),
+        ('ridge',    MultiOutputRegressor(Ridge(alpha=1.0))),
+    ]),
+    'anfis': lambda: MultiOutputRegressor(
+        ANFISSugeno(n_rules=15, n_epochs=400, lr=0.01, random_state=42), n_jobs=-1),
 }
 
 
@@ -133,7 +141,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Entraîne un modèle ML sur les données ADM1")
     parser.add_argument('--data', type=str, default='data/processed/adm1_training_data.csv')
     parser.add_argument('--model', type=str, default='rf', choices=list(MODELS),
-                        help='rf = Random Forest, gb = Gradient Boosting, ridge = Ridge')
+                        help='rf = Random Forest, gb = Gradient Boosting, ridge = Ridge, anfis = ANFIS Sugeno')
     parser.add_argument('--output', type=str, default='models/trained/adm1_{model}.pkl')
     parser.add_argument('--test-size', type=float, default=0.2)
     args = parser.parse_args()
